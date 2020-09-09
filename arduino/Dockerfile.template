@@ -1,0 +1,35 @@
+# base-image for node on any machine using a template variable,
+# see more about dockerfile templates here: https://www.balena.io/docs/learn/develop/dockerfile/#dockerfile-templates
+# and about balena base images here: https://www.balena.io/docs/reference/base-images/base-images/
+FROM balenalib/%%BALENA_MACHINE_NAME%%-debian:stretch
+
+# use `install_packages` if you need to install dependencies,
+# for instance if you need git, just uncomment the line below.
+# RUN install_packages git
+
+# Defines our working directory in container
+WORKDIR /usr/local/
+RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+RUN arduino-cli core update-index
+RUN sleep 5
+RUN arduino-cli core install arduino:avr
+RUN sleep 5
+
+WORKDIR /usr/src/app
+
+# RUN JOBS=MAX npm install --production --unsafe-perm && npm cache verify && rm -rf /tmp/*
+ENV UDEV=1
+
+# This will copy all files in our root to the working directory in the container
+COPY . ./
+
+
+RUN chmod +x commands.sh
+
+# Enable udevd so that plugged dynamic hardware devices show up in our container.
+RUN arduino-cli compile --fqbn arduino:avr:uno ./Test
+
+# server.js will run when container starts up on the device
+# RUN export PATH=usr/src/app:$PATH
+CMD ["./commands.sh"]
+# RUN ./commands.sh

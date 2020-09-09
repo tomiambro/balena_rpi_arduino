@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  arduino:
+    build: './arduino'
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    privileged: true
+  server:
+    build: './server'
+    ports:
+    - "80:80"
