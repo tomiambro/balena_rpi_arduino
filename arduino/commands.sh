@@ -8,5 +8,5 @@ arduino-cli upload -p /dev/ttyACM0 --verify --fqbn arduino:avr:uno ./Test --verb
 while true; do
 	tail -n 4 output.txt
 	echo "I'm alive"
-	sleep 15
+	sleep 5m
 done

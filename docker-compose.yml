@@ -8,5 +8,8 @@ services:
     privileged: true
   server:
     build: './server'
+    privileged: true
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
     ports:
     - "80:80"

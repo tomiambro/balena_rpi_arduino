@@ -1,6 +1,25 @@
 var express = require('express');
 var app = express();
 
+try {
+	var SerialPort = require("serialport");
+	const Readline = SerialPort.parsers.Readline;
+	var port = new SerialPort("/dev/ttyACM0", {
+		baudRate: 9600,
+	});
+	const parser = port.pipe(new Readline({ delimiter: '\r\n' }))
+	
+	port.open(function() {
+		parser.on("data", function(data){
+			console.log(data);
+		});
+	});
+}
+catch(error) {
+	console.log('Error: ')
+	console.log(error)
+}
+
 // Enable HTML template middleware
 app.engine('html', require('ejs').renderFile);
 
